@@ -40,6 +40,7 @@ $('.confirm').on('click',function(){
 })
 $('.confirm').on('click',function(){
   //发送ajax请求,告诉服务器需要退出
+
   // $.ajax({
   //   type:'get',
   //   url:'/employee/employeeLogout',
@@ -50,6 +51,8 @@ $('.confirm').on('click',function(){
   //   }
   // })
 
+  //  或
+
   //参数1 : 直接就是url地址
   //参数2 : 可选的data
   //参数3 : success的回调\
@@ -59,4 +62,43 @@ $('.confirm').on('click',function(){
     }
   })
 })
- 
+  //分页
+  /**
+   * 通过的分页功能
+   * @param {*} info 分页的数据
+   * @param {*} render 点击分页后的回调函数
+   */
+  function paginator(info,render){
+    //分页
+    $("#paginator").bootstrapPaginator({
+      bootstrapMajorVersion: 3,//默认是2，如果是bootstrap3版本，这个参数必填
+      currentPage: info.page,//当前页
+      totalPages: Math.ceil(info.total / info.size),//总页数
+      size: "small",//设置控件的大小，mini, small, normal,large
+      numberOfPages :10,//显示多少页
+      itemTexts : function(type,page,current){
+        //console.log(type,page,current)
+        switch(type){
+          case'first':
+          return '首页'
+          case'prev':
+          return '上一页'
+          case'next':
+          return '下一页'
+          case 'last':
+          return '尾页'
+          default:
+          return page
+        }
+      },
+      //使用bootstrap的tooltip组件
+      useBootstrapTooltip: true,
+      onPageClicked: function (a, b, c, p) {
+        //为按钮绑定点击事件 page:当前点击的按钮值
+        // console.log("haha",page)
+        page = p
+        //重新渲染
+        render()
+      }
+    })
+  }

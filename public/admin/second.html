@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>首页</title>
+  <title>二级分类管理</title>
   <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css">
+  <link rel="stylesheet" href="lib/bootstrap-validator/css/bootstrapValidator.css">
   <link rel="stylesheet" href="lib/nprogress/nprogress.css">
   <link rel="stylesheet" href="css/common.css">
 </head>
+
 <body>
   <div class="lt_aside">
     <div class="brand">
@@ -60,10 +63,26 @@
         <li class="active">二级分类管理</li>
       </ol>
       <!-- 每个页面具体的内容 -->
-      <!-- <div class="lt_content">
-        <div class="left pull-left"></div>
-        <div class="right pull-right"></div>
-      </div> -->
+      <div class="lt_content">
+        <button class="btn btn-default btn_add">添加分类</button>
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th width="20%">序号</th>
+              <th>一级分类名称</th>
+              <th>二级分类名称</th>
+              <th>二级分LOGO</th>
+            </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+        <!-- 准备一个分页的盒子 : ul-->
+        <div class="text-right">
+          <ul id="paginator"></ul>
+        </div>
+      </div>
     </div>
   </div>
   <!-- 退出模态框 -->
@@ -71,11 +90,12 @@
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+              aria-hidden="true">&times;</span></button>
           <h4 class="modal-title">温馨提示</h4>
         </div>
         <div class="modal-body">
-         <p class="text-danger"><span class="glyphicon glyphicon-info-sign"></span>您确定要退出后台管理系统吗？</p>
+          <p class="text-danger"><span class="glyphicon glyphicon-info-sign"></span>您确定要退出后台管理系统吗？</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -84,12 +104,85 @@
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
+
+
+
+ 
+  <div id="addModal" class="modal fade" tabindex="-1">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">添加分类</h4>
+          </div>
+          <form>
+            <div class="modal-body">
+              <div class="form-group">
+                <div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    <span class="dropdown-text">请选择一级分类</span>
+                    <span class="caret"></span>
+                  </button>
+                  <!-- 隐藏域:用于给后台传递数据 -->
+                  <input type="hidden" name="categoryId">
+                  <ul class="dropdown-menu">
+                  
+                  </ul>
+                </div>
+              </div>
+              <div class="form-group">
+                <input type="text" name="brandName" class="form-control" autocomplete="off" placeholder="请输入二级分类的名称">
+              </div>
+              <div class="form-group">
+                <label for="file" class="btn btn-default">上传图片</label>
+                <!-- 样式要和按钮一样，但是能够上传图片 -->
+                 <!-- input:file的框指定两个属性 
+                    name=""指定图片上传时候的name
+                    data-url="" 图片上传的接口地址
+                 -->
+                <input type="file" name="pic1" data-url="/category/addSecondCategoryPic" class="btn btn-default hidden" id="file">
+              </div>
+              <div class="form-group img_box">
+                <img src="../admin/imagse/images/none.png" width="100" height="100" alt="">
+                 <input type="hidden" name="brandLogo">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+              <button type="submit" class="btn btn-primary">确定</button>
+            </div>
+        </form>
+        </div>
+      </div>
+    </div>
   <!-- 模化块 -->
   <script src="lib/jquery/jquery.js"></script>
+  <script src="lib/jquery-fileupload/jquery.ui.widget.js"></script>
+  <script src="lib/jquery-fileupload/jquery.fileupload.js"></script>
   <script src="lib/bootstrap/js/bootstrap.js"></script>
+  <script src="lib/bootstrap-paginator/bootstrap-paginator.js"></script>
+  <script src="lib/bootstrap-validator/js/bootstrapValidator.js"></script>
   <script src="lib/nprogress/nprogress.js"></script>
-  <script src="lib/echarts/echarts.min.js"></script>
+  <script src="lib/artTemplate/template-web.js"></script>
   <script src="js/common.js"></script>
-  <script src="js/index.js"></script>
+  <script src="js/second.js"></script>
+
+
+  <script type="text/html" id="tpl">
+   {{each rows v i}}
+    <tr>
+        <td>{{ (page - 1) * size + i + 1 }}</td>
+        <td>{{ v.categoryName }}</td>
+        <td>{{ v.brandName }}</td>
+        <td><img width="60" height="60" src="{{v.brandLogo}}" alt=""></td>
+      </tr>
+   {{/each}}
+  </script>
+  <script type="text/html" id="tpl2">
+  {{each rows v i}}
+       <li data-id="{{ v.id }}"><a href="javascript:;">{{ v.categoryName}}</a></li>
+  {{/each}}
+  </script>
 </body>
+
 </html>

@@ -127,9 +127,8 @@ ul,ol {
   width: 47%;
   /* background-color: pink; */
 }
-.table .table-bordered th,
-.table .table-bordered td {
+.table.table-bordered th,
+.table.table-bordered td {
   text-align: center;
   vertical-align: middle;
 }
-#
