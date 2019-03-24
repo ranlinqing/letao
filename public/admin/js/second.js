@@ -61,6 +61,70 @@ $('#file').fileupload({
 })
 
 //表单校验功能
+var $form = $('form')
+$form.bootstrapValidator({
+  //指定不校验的类型,默认对禁用的隐藏不可见的不做校验
+  excluded:[],
+  //指定对谁进行校验,对应表单中的name属性
+  fields:{
+    //对categoryName进行校验
+    categoryId:{
+      validators:{
+        notEmpty:{
+          message:'请选择一个一级分类'
+        }
+      }
+    },
+    brandName:{
+      validators:{
+        notEmpty:{
+          message:'请上传二级分类的名称'
+        }
+      }
+    },
+    brandLogo:{
+      validators:{
+        notEmpty:{
+          message:'请上传二级分类的名称'
+        }
+      }
+    }
+  },
+  //文件在bootstrap-validator使用笔记里面
+  feedbackIcons: {
+    valid: 'glyphicon glyphicon-ok',
+    invalid: 'glyphicon glyphicon-remove',
+    validating: 'glyphicon glyphicon-refresh'
+  },
+})
+
+
+
+
+//注册表单校验成功事件
+$form.on('success.form.bv', function(e){
+  e.preventDefault()
+  //发送ajax请求
+  $.ajax({
+    type:'post',
+    url:'/category/addSecondCategory',
+    data: $form.serialize(),
+    success:function(info){
+      if(info.success){
+        //隐藏模态框
+        $('#addModal').modal('hide')
+        //重置表单样式
+        $form.data('bootstrapValidator').resetForm(true)
+        //重新渲染第一页
+        page = 1
+        render()
+        //重置下拉框的文字和图片
+        $('.dropdown-text').text('请选择一级分类')
+        $('.img_box img').attr('src','../imagse/images/none.png')
+      }
+    }
+  })
+})
 
 
 
